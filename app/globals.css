@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Use a class for dark mode so the toggle can override the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+
+  /* App colors. These are the only ones that change between modes.
+     Deck colors live in data/decks.js and stay the same in both. */
+  --color-app: var(--app);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-brand: #ffc93c;
+}
+
+:root {
+  --app: #f4f2ee;
+  --ink: #16151a;
+  --muted: #6b6873;
+  --surface: #ffffff;
+  --line: rgb(0 0 0 / 0.1);
+}
+
+.dark {
+  --app: #0f0e13;
+  --ink: #ffffff;
+  --muted: #a3a0ad;
+  --surface: #1a1922;
+  --line: rgb(255 255 255 / 0.12);
+}
+
+html,
+body {
+  height: 100%;
+}
