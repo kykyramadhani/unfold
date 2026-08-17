@@ -49,14 +49,7 @@ const variants = {
  * keys the card by index so each one mounts fresh, which is also why `flipped`
  * needs no manual reset.
  */
-export default function SwipeableCard({
-  front,
-  back,
-  direction = 0,
-  onSwipe,
-  onFlip,
-  disabled = false,
-}) {
+export default function SwipeableCard({ front, back, direction = 0, onSwipe, onFlip }) {
   const { t } = useI18n();
   const [flipped, setFlipped] = useState(false);
 
@@ -97,7 +90,7 @@ export default function SwipeableCard({
       initial="enter"
       animate="center"
       exit="exit"
-      drag={disabled ? false : "x"}
+      drag="x"
       dragMomentum={false}
       style={{ x, rotate, perspective: 1400 }}
       onPointerDown={() => (draggedRef.current = false)}

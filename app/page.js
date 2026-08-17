@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 import Button from "@/components/ui/Button";
-import { CHARACTERS, BlobShocked } from "@/components/CardCharacters";
+import { DeckCharacter } from "@/components/CardCharacters";
 import { decks } from "@/data/decks";
 import { useI18n } from "@/lib/i18n";
 
@@ -37,23 +37,17 @@ export default function SplashPage() {
           animate={{ y: [0, -9, 0], rotate: [-1.2, 1.2, -1.2] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         >
-          {decks.slice(0, 3).map((deck, i) => {
-            const Character = CHARACTERS[deck.theme.character] ?? BlobShocked;
-            return (
-              <motion.div
-                key={deck.id}
-                initial={{ rotate: 0, x: 0, y: 40, opacity: 0 }}
-                animate={{ rotate: FAN[i].rotate, x: FAN[i].x, y: FAN[i].y, opacity: 1 }}
-                transition={{ delay: 0.15 + i * 0.1, type: "spring", stiffness: 150, damping: 20 }}
-                className={`-mx-2.5 flex h-40 w-28 items-center justify-center rounded-2xl border border-black/10 shadow-xl shadow-black/30 sm:h-48 sm:w-34 ${deck.theme.surface} ${i === 1 ? "z-10" : ""}`}
-              >
-                <Character
-                  className="size-16 drop-shadow-md sm:size-20"
-                  {...deck.theme.characterColors}
-                />
-              </motion.div>
-            );
-          })}
+          {decks.slice(0, 3).map((deck, i) => (
+            <motion.div
+              key={deck.id}
+              initial={{ rotate: 0, x: 0, y: 40, opacity: 0 }}
+              animate={{ rotate: FAN[i].rotate, x: FAN[i].x, y: FAN[i].y, opacity: 1 }}
+              transition={{ delay: 0.15 + i * 0.1, type: "spring", stiffness: 150, damping: 20 }}
+              className={`-mx-2.5 flex h-40 w-28 items-center justify-center rounded-2xl border border-black/10 shadow-xl shadow-black/30 sm:h-48 sm:w-34 ${deck.theme.surface} ${i === 1 ? "z-10" : ""}`}
+            >
+              <DeckCharacter theme={deck.theme} className="size-16 drop-shadow-md sm:size-20" />
+            </motion.div>
+          ))}
         </motion.div>
       </motion.div>
 

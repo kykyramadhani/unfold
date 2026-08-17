@@ -8,7 +8,6 @@ import { X } from "lucide-react";
 
 import SwipeableCard from "@/components/SwipeableCard";
 import { CardFaceDown, CardFaceUp } from "@/components/CardFaces";
-import DeckLoader from "@/components/DeckLoader";
 import EndScreen from "@/components/EndScreen";
 import GestureHint from "@/components/GestureHint";
 import { getDeck } from "@/data/decks";
@@ -88,7 +87,6 @@ export default function PlayPage() {
 
       <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
         <AnimatePresence mode="wait" custom={exitDirection} onExitComplete={handleExitComplete}>
-          {/* hand is null on the very first render, before the deal effect runs */}
           {finished ? (
             <EndScreen key="end" onRestart={deal} />
           ) : hand && exitDirection === 0 ? (
@@ -105,8 +103,6 @@ export default function PlayPage() {
                 <CardFaceUp theme={deck.theme} deckTitle={title} question={pool[hand[index]]} />
               }
             />
-          ) : hand === null ? (
-            <DeckLoader key="loading" deck={deck} />
           ) : null}
         </AnimatePresence>
         <GestureHint flipped={flipped} show={showHint && hand !== null && !finished} />

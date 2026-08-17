@@ -4,13 +4,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
-import { CHARACTERS, BlobShocked } from "@/components/CardCharacters";
+import { DeckCharacter } from "@/components/CardCharacters";
 import { CARDS_PER_ROUND } from "@/lib/hand";
 import { useI18n } from "@/lib/i18n";
 
 export default function DeckTile({ deck, index = 0, onOpen }) {
   const { t, tr } = useI18n();
-  const Character = CHARACTERS[deck.theme.character] ?? BlobShocked;
   const { theme } = deck;
 
   return (
@@ -43,7 +42,7 @@ export default function DeckTile({ deck, index = 0, onOpen }) {
         className={`group relative flex h-full flex-col justify-between rounded-3xl border border-black/5 p-6 shadow-lg shadow-black/20 transition-shadow hover:shadow-black/30 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/50 ${theme.surface}`}
       >
         <div>
-          <Character className="size-20 drop-shadow-md" {...theme.characterColors} />
+          <DeckCharacter theme={theme} className="size-20 drop-shadow-md" />
           <h2 className={`mt-5 text-xl font-semibold tracking-tight ${theme.onSurface}`}>
             {tr(deck.title)}
           </h2>

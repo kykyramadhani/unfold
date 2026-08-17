@@ -2,9 +2,7 @@
 
 import { motion } from "framer-motion";
 
-import { CHARACTERS, BlobShocked } from "@/components/CardCharacters";
-
-const DOTS = [0, 1, 2];
+import { DeckCharacter } from "@/components/CardCharacters";
 
 /**
  * Shown while the gameplay route is still loading. It borrows the deck's own
@@ -12,7 +10,6 @@ const DOTS = [0, 1, 2];
  * generic spinner. Falls back to neutral styling if the deck is unknown.
  */
 export default function DeckLoader({ deck }) {
-  const Character = CHARACTERS[deck?.theme?.character] ?? BlobShocked;
   const surface = deck?.theme?.surface ?? "bg-surface";
   const dot = deck?.theme?.stackBack ?? "bg-muted";
 
@@ -23,11 +20,11 @@ export default function DeckLoader({ deck }) {
         animate={{ y: [0, -26, 0], rotate: [-5, 5, -5], scale: [1, 1.04, 1] }}
         transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
       >
-        <Character className="size-20 sm:size-24" {...deck?.theme?.characterColors} />
+        <DeckCharacter theme={deck?.theme} className="size-20 sm:size-24" />
       </motion.div>
 
       <div className="flex gap-2" role="status" aria-label="Loading">
-        {DOTS.map((i) => (
+        {[0, 1, 2].map((i) => (
           <motion.span
             key={i}
             className={`size-2.5 rounded-full ${dot}`}

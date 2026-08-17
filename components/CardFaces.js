@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { CHARACTERS, BlobShocked } from "@/components/CardCharacters";
+import { DeckCharacter } from "@/components/CardCharacters";
 
 // Shared card body: rounded corners, thin border, soft shadow.
 const shell =
@@ -16,7 +16,6 @@ const GRID = {
 
 /** Cover side: bright color and one big character in the middle. */
 function CardFaceDownImpl({ theme, deckTitle }) {
-  const Character = CHARACTERS[theme.character] ?? BlobShocked;
   return (
     <div className={`${shell} ${theme.surface} items-center p-6`}>
       <span className={`${WORDMARK} pt-2 text-white/70`}>unfold</span>
@@ -24,7 +23,7 @@ function CardFaceDownImpl({ theme, deckTitle }) {
           items-center, which would shrink this row and break the percent
           width below. */}
       <div className="flex w-full flex-1 items-center justify-center">
-        <Character className="h-auto w-[88%] max-w-72 drop-shadow-xl" {...theme.characterColors} />
+        <DeckCharacter theme={theme} className="h-auto w-[88%] max-w-72 drop-shadow-xl" />
       </div>
       <span className="rounded-full bg-white/25 px-5 py-2 text-sm font-semibold tracking-wide text-white backdrop-blur-sm">
         {deckTitle}

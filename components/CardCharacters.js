@@ -9,19 +9,15 @@
 
 const FACE_WHITE = "#FFFFFF";
 
-/** Big cartoon eyes with highlights. */
-function Eyes({ cx = 100, cy = 96, spread = 26, r = 20, ink, pupil = 9, look = 0 }) {
-  return (
-    <>
-      {[-1, 1].map((side) => (
-        <g key={side}>
-          <ellipse cx={cx + side * spread} cy={cy} rx={r} ry={r * 1.08} fill={FACE_WHITE} />
-          <circle cx={cx + side * spread + look} cy={cy + 3} r={pupil} fill={ink} />
-          <circle cx={cx + side * spread + look - 4} cy={cy - 2} r={pupil * 0.32} fill={FACE_WHITE} />
-        </g>
-      ))}
-    </>
-  );
+/** A pair of big cartoon eyes, centered on the 200x200 canvas. */
+function Eyes({ cy, spread, r, ink }) {
+  return [-1, 1].map((side) => (
+    <g key={side}>
+      <ellipse cx={100 + side * spread} cy={cy} rx={r} ry={r * 1.08} fill={FACE_WHITE} />
+      <circle cx={100 + side * spread} cy={cy + 3} r="9" fill={ink} />
+      <circle cx={96 + side * spread} cy={cy - 2} r="3" fill={FACE_WHITE} />
+    </g>
+  ));
 }
 
 const BLOB_SHADE =
@@ -168,9 +164,19 @@ export function BurstWink({ className, body = "#FFCE4F", shade = "#F0B227", ink 
   );
 }
 
-export const CHARACTERS = {
+const CHARACTERS = {
   blob: BlobShocked,
   hug: BlobHug,
   squiggle: SquiggleGrin,
   burst: BurstWink,
 };
+
+/**
+ * Draws whichever character a deck's theme asks for, in that deck's colors.
+ * Every screen that shows a character needs the same lookup, the same fallback
+ * for an unknown name, and the same colors, so all three live here.
+ */
+export function DeckCharacter({ theme, className }) {
+  const Character = CHARACTERS[theme?.character] ?? BlobShocked;
+  return <Character className={className} {...theme?.characterColors} />;
+}
