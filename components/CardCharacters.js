@@ -59,6 +59,57 @@ export function BlobShocked({ className, body = "#8B7BF7", shade = "#6F5DE0", in
   );
 }
 
+/**
+ * One open hand: a rounded palm with four short fingers. Drawn twice, once
+ * fat in the outline color and once on top in the fill, so the seams where
+ * the fingers meet the palm do not show.
+ */
+function Hand({ fill, line }) {
+  const shapes = (
+    <>
+      {[0, 1, 2, 3].map((i) => (
+        <rect key={i} x={3 + i * 11} y="0" width="11" height="22" rx="5.5" />
+      ))}
+      <rect x="0" y="14" width="47" height="34" rx="16" />
+    </>
+  );
+  return (
+    <>
+      <g fill={line} stroke={line} strokeWidth="8" strokeLinejoin="round">
+        {shapes}
+      </g>
+      <g fill={fill}>{shapes}</g>
+    </>
+  );
+}
+
+/** Warm blob with closed smiling eyes and two open hands. Reads as a hug. */
+export function BlobHug({ className, body = "#FF8B6B", shade = "#EE6E4C", ink = "#3D170C" }) {
+  return (
+    <svg viewBox="0 0 200 200" className={className} aria-hidden focusable="false">
+      <path d={BLOB_SHADE} fill={shade} />
+      <path d={BLOB_BODY} fill={body} />
+      {/* closed eyes, curving up so they read as smiling */}
+      <path d="M60 100c7-11 21-11 28 0" stroke={ink} strokeWidth="7" strokeLinecap="round" fill="none" />
+      <path d="M112 100c7-11 21-11 28 0" stroke={ink} strokeWidth="7" strokeLinecap="round" fill="none" />
+      <ellipse cx="66" cy="126" rx="10" ry="6" fill="#F4607C" opacity="0.45" />
+      <ellipse cx="134" cy="126" rx="10" ry="6" fill="#F4607C" opacity="0.45" />
+      {/* soft open smile */}
+      <path d="M80 130c6 14 34 14 40 0" stroke={ink} strokeWidth="7" strokeLinecap="round" fill="none" />
+      {/* hands last so they sit in front, one mirrored for the other side */}
+      <g transform="translate(2 104) rotate(-20)">
+        <Hand fill={body} line={shade} />
+      </g>
+      <g transform="translate(200 0) scale(-1 1)">
+        <g transform="translate(2 104) rotate(-20)">
+          <Hand fill={body} line={shade} />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+
 const SQUIG_SHADE =
   "M100.0 24.0C107.1 23.0 115.1 18.5 122.1 19.4C129.2 20.2 135.3 25.8 142.1 29.0C149.0 32.2 156.9 34.3 163.3 38.7C169.7 43.1 178.3 48.3 180.7 55.4C183.1 62.5 178.7 73.5 177.5 81.2C176.3 89.0 172.8 94.9 173.4 102.0C174.0 109.1 180.4 116.2 181.2 123.8C182.1 131.3 181.6 140.6 178.3 147.2C175.0 153.8 167.1 158.2 161.5 163.5C155.8 168.7 150.8 175.2 144.3 178.7C137.7 182.2 129.4 184.7 122.1 184.3C114.7 183.9 107.1 177.5 100.0 176.4C92.9 175.3 87.5 176.7 79.7 177.8C71.9 178.9 60.7 184.7 53.3 182.8C46.0 181.0 39.5 173.2 35.4 166.6C31.2 160.1 31.0 150.6 28.2 143.5C25.3 136.3 19.6 130.8 18.2 123.9C16.9 117.0 18.8 108.9 20.3 102.0C21.7 95.1 26.7 89.9 27.1 82.5C27.5 75.0 21.9 65.5 22.6 57.3C23.2 49.1 25.0 37.6 31.0 33.0C37.0 28.5 50.4 31.3 58.4 30.0C66.5 28.8 72.6 26.5 79.5 25.5C86.4 24.5 92.9 25.0 100.0 24.0Z";
 const SQUIG_BODY =
@@ -119,6 +170,7 @@ export function BurstWink({ className, body = "#FFCE4F", shade = "#F0B227", ink 
 
 export const CHARACTERS = {
   blob: BlobShocked,
+  hug: BlobHug,
   squiggle: SquiggleGrin,
   burst: BurstWink,
 };

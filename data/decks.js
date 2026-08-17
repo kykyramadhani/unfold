@@ -288,7 +288,7 @@ export const decks = [
       onSurface: "text-white",
       onSurfaceMuted: "text-white/75",
       tape: "bg-[#4A3BC4]",
-      character: "blob",
+      character: "hug",
       characterColors: { body: "#FF8B6B", shade: "#EE6E4C", ink: "#3D170C" },
     },
     cards: {
