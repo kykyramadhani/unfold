@@ -42,6 +42,7 @@ These drive a real browser with Playwright. Start the dev server first, then:
 node test-swipe.mjs      # swipe brings in the next card, flip, end, restart
 node test-hand.mjs       # random draw: size, no repeats, language stays put
 node test-settings.mjs   # theme and language switching, saving, no flash
+node test-loader.mjs     # tapping a deck shows its loader right away
 node sens.mjs            # swipe sensitivity table
 node perf.mjs            # frame times during the exit animation
 ```

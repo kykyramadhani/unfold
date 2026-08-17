@@ -8,7 +8,7 @@ import { CHARACTERS, BlobShocked } from "@/components/CardCharacters";
 import { CARDS_PER_ROUND } from "@/lib/hand";
 import { useI18n } from "@/lib/i18n";
 
-export default function DeckTile({ deck, index = 0 }) {
+export default function DeckTile({ deck, index = 0, onOpen }) {
   const { t, tr } = useI18n();
   const Character = CHARACTERS[deck.theme.character] ?? BlobShocked;
   const { theme } = deck;
@@ -33,6 +33,13 @@ export default function DeckTile({ deck, index = 0 }) {
       />
       <Link
         href={`/play/${deck.id}`}
+        onClick={(e) => {
+          // Let cmd/ctrl/shift clicks open a new tab the normal way.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          if (!onOpen) return;
+          e.preventDefault();
+          onOpen(deck);
+        }}
         className={`group relative flex h-full flex-col justify-between rounded-3xl border border-black/5 p-6 shadow-lg shadow-black/20 transition-shadow hover:shadow-black/30 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/50 ${theme.surface}`}
       >
         <div>
