@@ -1,19 +1,24 @@
 "use client";
 
+import { ArrowLeft, ArrowUpRight, RotateCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 
 import SwipeableCard from "@/components/SwipeableCard";
 import { CardFaceDown, CardFaceUp } from "@/components/CardFaces";
 import EndScreen from "@/components/EndScreen";
 import GestureHint from "@/components/GestureHint";
+import { LangSwitch, Logo } from "@/components/SiteHeader";
+import Button from "@/components/ui/Button";
 import { getDeck } from "@/data/decks";
 import { drawHand } from "@/lib/hand";
 import { useGestureHint } from "@/lib/hints";
 import { useI18n } from "@/lib/i18n";
+
+const LABEL = "text-[10px] leading-[15px] font-bold tracking-[1.2px] sm:text-xs sm:leading-[18px]";
+const pad = (n) => String(n).padStart(2, "0");
 
 export default function PlayPage() {
   const { deckId } = useParams();
@@ -59,54 +64,112 @@ export default function PlayPage() {
   const title = tr(deck.title);
   const total = hand?.length ?? 0;
   const finished = hand !== null && index >= total;
+  const current = Math.min(index + 1, total);
 
-  // pt-20 on mobile keeps the header below the fixed settings bar. On wider
-  // screens the header is centered and narrow, so it never reaches it.
+  function swipe(dir) {
+    setExitDirection(dir);
+    recordSwipe();
+  }
+
+  // The Next button throws the card the same way a swipe does.
+  const next = () => {
+    if (hand && !finished && exitDirection === 0) swipe(1);
+  };
+
   return (
-    <main className="flex flex-1 flex-col px-5 pt-20 pb-10 sm:px-8 sm:pt-5">
-      {/* keep it simple: a progress bar and a close button */}
-      <header className="mx-auto flex w-full max-w-sm items-center gap-4">
-        <div className="h-1 flex-1 overflow-hidden rounded-full bg-ink/10">
-          {/* Use scaleX, not width. Animating width forces a layout on
-              every frame while the card is moving. */}
-          <motion.div
-            className="h-full w-full origin-left rounded-full bg-ink"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: total ? Math.min(index, total) / total : 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 26 }}
-          />
-        </div>
-        <Link
-          href="/decks"
-          aria-label={t("leaveDeck")}
-          className="text-muted transition-colors hover:text-ink"
-        >
-          <X className="size-5" />
-        </Link>
+    <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col overflow-x-clip px-6 pb-10 lg:px-[73px]">
+      {/* phone header: back, deck name, close */}
+      <header className="flex h-[84px] items-center justify-between border-b border-line lg:hidden">
+        <Link href="/decks" aria-label={t("leaveDeck")} className="text-ink"><ArrowLeft className="size-6" strokeWidth={2.5} aria-hidden /></Link>
+        <span className="text-xs font-bold text-ink uppercase">{title}</span>
+        <Link href="/" aria-label={t("close")} className="text-[26px] leading-none text-ink">×</Link>
       </header>
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-        <AnimatePresence mode="wait" custom={exitDirection} onExitComplete={handleExitComplete}>
-          {finished ? (
-            <EndScreen key="end" onRestart={deal} />
-          ) : hand && exitDirection === 0 ? (
-            <SwipeableCard
-              key={index}
-              direction={exitDirection}
-              onFlip={setFlipped}
-              onSwipe={(dir) => {
-                setExitDirection(dir);
-                recordSwipe();
-              }}
-              front={<CardFaceDown theme={deck.theme} deckTitle={title} />}
-              back={
-                <CardFaceUp theme={deck.theme} deckTitle={title} question={pool[hand[index]]} />
-              }
-            />
-          ) : null}
-        </AnimatePresence>
-        <GestureHint flipped={flipped} show={showHint && hand !== null && !finished} />
+      {/* desktop header */}
+      <header className="hidden h-[105px] grid-cols-[1fr_auto_1fr] items-center border-b border-line lg:grid">
+        <div className="flex items-center gap-[78px]">
+          <Logo />
+          <Link href="/decks" className="flex items-center gap-2 text-[15px] font-bold text-text hover:text-ink"><ArrowLeft className="size-4" strokeWidth={2.5} aria-hidden /> {t("allDecks")}</Link>
+        </div>
+        <span className="text-xs font-bold tracking-[1.2px] whitespace-pre text-muted uppercase">
+          {title}  /  {t("cardOf", { n: pad(current), total })}
+        </span>
+        <LangSwitch className="justify-self-end" />
+      </header>
+
+      <div className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[1fr_475px] lg:gap-[100px] lg:py-12 xl:pl-8">
+        {/* editorial column, desktop only */}
+        <div className="hidden lg:block">
+          <p className={`${LABEL} text-ink`}>{t("takeYourTimeDesktop")}</p>
+          <h1 className="mt-14 font-display text-[61px] leading-[76px] font-semibold text-ink">
+            {t("playLine1")}
+            <br />
+            <span className="text-accent">{t("playLine2")}</span>
+          </h1>
+          <p className="mt-12 max-w-[495px] text-xl leading-[31px] text-muted">{t("playBody")}</p>
+          <div className="mt-24 w-[416px] border-t border-line pt-6">
+            <p className={`${LABEL} text-muted`}>{t("makeSpace")}</p>
+          </div>
+        </div>
+
+        <div className="mx-auto flex w-full max-w-[342px] flex-col lg:max-w-[475px]">
+          <p className={`${LABEL} mb-5 text-ink lg:hidden`}>{t("takeYourTimeMobile")}</p>
+
+          <div className="flex min-h-[482px] items-center justify-center lg:min-h-[599px]">
+            <AnimatePresence mode="wait" custom={exitDirection} onExitComplete={handleExitComplete}>
+              {finished ? (
+                <EndScreen key="end" onRestart={deal} />
+              ) : hand && exitDirection === 0 ? (
+                <SwipeableCard
+                  key={index}
+                  direction={exitDirection}
+                  onFlip={setFlipped}
+                  onSwipe={swipe}
+                  front={<CardFaceDown theme={deck.theme} deckTitle={title} />}
+                  back={
+                    <CardFaceUp
+                      theme={deck.theme}
+                      deckTitle={title.toUpperCase()}
+                      question={pool[hand[index]]}
+                      n={current}
+                      total={total}
+                    />
+                  }
+                />
+              ) : null}
+            </AnimatePresence>
+          </div>
+
+          {/* phone: progress and swipe hint under the card */}
+          <div className="mt-5 flex items-center justify-between text-muted lg:hidden">
+            <span className="text-sm font-bold whitespace-pre">{pad(current)}  /  {total}</span>
+            <span className="text-[13px] font-medium">{t("swipeMore")}</span>
+          </div>
+
+          <div className="mt-4 hidden lg:block">
+            <GestureHint flipped={flipped} show={showHint && hand !== null && !finished} />
+          </div>
+
+          {!finished && (
+            <div className="mt-6 flex flex-col items-center gap-4 lg:mt-4 lg:flex-row lg:gap-[18px]">
+              <Button onClick={next} className="h-14 w-full lg:h-[62px] lg:w-[292px]">
+                {t("nextQuestion")} <ArrowUpRight className="size-4" strokeWidth={2.5} aria-hidden />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={deal}
+                className="max-lg:h-auto max-lg:border-0 max-lg:bg-transparent max-lg:p-0 max-lg:text-sm lg:h-[62px] lg:w-[164px]"
+              >
+                <span className="lg:hidden">{t("shuffleCard")}</span>
+                <span className="hidden lg:inline">{t("shuffle")}</span>
+                <RotateCw className="size-4" strokeWidth={2.5} aria-hidden />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
+
+      <p className={`${LABEL} hidden text-muted lg:block xl:pl-8`}>{t("tellStories")}</p>
     </main>
   );
 }

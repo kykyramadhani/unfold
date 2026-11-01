@@ -17,7 +17,9 @@ const MOMENTUM_LOOKAHEAD = 0.15; // seconds of velocity to project forward
 // Soft and smooth. Damped enough that nothing bounces or wobbles.
 const SPRING = { type: "spring", stiffness: 170, damping: 26, mass: 1 };
 
-const offscreen = () => (typeof window === "undefined" ? 800 : window.innerWidth) + 200;
+// The card only travels a short way and fades out. Flying it across the whole
+// window looks wrong on desktop, where it would cross the text next to it.
+const EXIT_DISTANCE = 160;
 
 const variants = {
   enter: { y: 24, scale: 0.96, opacity: 0 },
@@ -32,10 +34,10 @@ const variants = {
   // The direction comes from the custom prop on AnimatePresence, read at the
   // moment this card is removed.
   exit: (direction) => ({
-    x: direction * offscreen(),
+    x: direction * EXIT_DISTANCE,
     opacity: 0,
     // easeOut, not easeIn. A thrown card leaves fast and then slows down.
-    transition: { duration: 0.24, ease: "easeOut", opacity: { duration: 0.2, delay: 0.06 } },
+    transition: { duration: 0.26, ease: "easeOut", opacity: { duration: 0.2 } },
   }),
 };
 
@@ -97,7 +99,7 @@ export default function SwipeableCard({ front, back, direction = 0, onSwipe, onF
       onDragStart={() => (draggedRef.current = true)}
       onDragEnd={handleDragEnd}
       onTap={() => !draggedRef.current && flip()}
-      className="relative w-full max-w-sm cursor-grab touch-none select-none active:cursor-grabbing"
+      className="relative w-full max-w-[342px] cursor-grab sm:max-w-[475px] touch-none select-none active:cursor-grabbing"
       role="button"
       tabIndex={0}
       aria-label={flipped ? t("questionShown") : t("tapToReveal")}
@@ -109,7 +111,7 @@ export default function SwipeableCard({ front, back, direction = 0, onSwipe, onF
       }}
     >
       <motion.div
-        className="relative aspect-[3/4] w-full transform-3d"
+        className="relative aspect-[342/482] w-full transform-3d sm:aspect-[475/599]"
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       >

@@ -24,7 +24,7 @@ export default function EndScreen({ onRestart }) {
       className="flex w-full max-w-sm flex-col items-center gap-8 text-center"
     >
       <div>
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">{t("endTitle")}</h2>
+        <h2 className="font-display text-4xl font-semibold text-ink sm:text-5xl">{t("endTitle")}</h2>
         <p className="mt-3 text-muted">{t("endSubtitle")}</p>
       </div>
 

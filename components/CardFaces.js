@@ -1,54 +1,59 @@
+"use client";
+
 import { memo } from "react";
-import { DeckCharacter } from "@/components/CardCharacters";
 
-// Shared card body: rounded corners, thin border, soft shadow.
-const shell =
-  "flex h-full w-full flex-col overflow-hidden rounded-3xl border border-black/5 shadow-2xl shadow-slate-900/25";
+import { useI18n } from "@/lib/i18n";
 
-const WORDMARK = "text-[10px] font-bold tracking-[0.4em] uppercase";
+const shell = "flex h-full w-full flex-col overflow-hidden rounded-[25px] sm:rounded-[29px]";
+const LABEL = "text-[10px] leading-[15px] font-bold tracking-[1.2px] text-ink uppercase sm:text-xs sm:leading-[18px]";
 
-// Faint notebook grid. Only about 5% gray so it never fights with the text.
-const GRID = {
-  backgroundImage:
-    "linear-gradient(#0000000d 1px, transparent 1px), linear-gradient(90deg, #0000000d 1px, transparent 1px)",
-  backgroundSize: "28px 28px",
-};
+// Long questions step down a size so they always fit the card.
+function questionSize(text) {
+  if (text.length <= 60) return "text-[35px] leading-[43px] sm:text-[48px] sm:leading-[61px]";
+  if (text.length <= 100) return "text-[28px] leading-[35px] sm:text-[36px] sm:leading-[46px]";
+  return "text-[23px] leading-[30px] sm:text-[29px] sm:leading-[38px]";
+}
 
-/** Cover side: bright color and one big character in the middle. */
+/** Cover side: the deck's color, its symbol and its name. */
 function CardFaceDownImpl({ theme, deckTitle }) {
+  const { t } = useI18n();
   return (
-    <div className={`${shell} ${theme.surface} items-center p-6`}>
-      <span className={`${WORDMARK} pt-2 text-white/70`}>unfold</span>
-      {/* w-full is needed here. The wrapper is a column flex with
-          items-center, which would shrink this row and break the percent
-          width below. */}
-      <div className="flex w-full flex-1 items-center justify-center">
-        <DeckCharacter theme={theme} className="h-auto w-[88%] max-w-72 drop-shadow-xl" />
+    <div className={`${shell} ${theme.surface} p-7 sm:p-9`}>
+      <span className={LABEL}>unfold</span>
+      <div className="flex flex-1 items-center justify-center text-[120px] leading-none text-ink sm:text-[150px]" aria-hidden>
+        {theme.symbol}
       </div>
-      <span className="rounded-full bg-white/25 px-5 py-2 text-sm font-semibold tracking-wide text-white backdrop-blur-sm">
+      <p className="font-display text-[29px] leading-[38px] font-semibold text-ink sm:text-[36px] sm:leading-[44px]">
         {deckTitle}
-      </span>
+      </p>
+      <p className={`${LABEL} mt-3 opacity-70`}>{t("tapToReveal")}</p>
     </div>
   );
 }
 
-/** Question side: off-white grid paper, a taped label, and the question. */
-function CardFaceUpImpl({ theme, deckTitle, question }) {
+/** Question side, laid out like the playing card in the design. */
+function CardFaceUpImpl({ theme, deckTitle, question, n, total }) {
+  const { t } = useI18n();
+  const rule = { borderColor: theme.rule };
   return (
-    <div className={`${shell} relative bg-[#FAFAF7]`}>
-      <div className="absolute inset-0" style={GRID} aria-hidden />
-      <div className="relative flex h-full w-full flex-col items-center p-10 text-center">
-        {/* tape strip, stuck on a little crooked */}
-        <span
-          className={`-rotate-2 ${theme.tape} px-4 py-1 text-xs font-bold tracking-[0.2em] text-white uppercase shadow-sm`}
-          style={{ clipPath: "polygon(2% 0, 99% 4%, 98% 96%, 1% 100%)" }}
-        >
-          {deckTitle}
+    <div className={`${shell} ${theme.surface} px-7 py-7 sm:px-[37px] sm:py-[37px]`}>
+      <p className={LABEL}>UNFOLD / {deckTitle}</p>
+      <div className="mt-4 border-t sm:mt-5" style={rule} />
+
+      <div className="flex flex-1 flex-col justify-center gap-6 py-4 sm:gap-8">
+        <span className="text-[61px] leading-none text-ink sm:text-[66px]" aria-hidden>
+          {theme.symbol}
         </span>
-        <p className="flex flex-1 items-center justify-center text-2xl leading-relaxed font-medium text-balance text-gray-800 sm:text-3xl">
-          {question}
-        </p>
-        <span className={`${WORDMARK} text-gray-300`}>unfold</span>
+        <p className={`font-display font-semibold text-ink ${questionSize(question)}`}>{question}</p>
+      </div>
+
+      <div className="border-t pt-5 sm:pt-6" style={rule}>
+        <div className="flex items-center justify-between">
+          <span className={LABEL}>{t("noRightWrong")}</span>
+          <span className={`${LABEL} hidden sm:inline`}>
+            {String(n).padStart(2, "0")} / {total}
+          </span>
+        </div>
       </div>
     </div>
   );

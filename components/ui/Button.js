@@ -3,16 +3,16 @@
 import Link from "next/link";
 
 const BASE =
-  "group inline-flex items-center justify-center gap-2.5 rounded-full font-bold transition-transform hover:scale-[1.03] active:scale-95 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/50";
+  "group inline-flex items-center justify-center gap-2 rounded-full text-[15px] font-bold transition-transform hover:scale-[1.03] active:scale-95 focus:outline-none focus-visible:ring-4 focus-visible:ring-ink/30";
 
 const VARIANTS = {
-  primary: "bg-brand text-neutral-900 shadow-lg shadow-brand/25",
-  outline: "text-ink ring-1 ring-line hover:bg-ink/5",
+  primary: "bg-ink text-white",
+  outline: "border border-line bg-white text-ink",
 };
 
 const SIZES = {
-  md: "px-6 py-3.5 text-base",
-  lg: "px-8 py-4 text-base",
+  md: "h-14 px-7",
+  lg: "h-16 px-9",
 };
 
 /** One pill button for both links and buttons. Pass `href` to get a link. */

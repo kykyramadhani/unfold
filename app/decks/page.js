@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
 
 import DeckLoader from "@/components/DeckLoader";
 import DeckTile from "@/components/DeckTile";
+import SiteHeader from "@/components/SiteHeader";
 import { decks } from "@/data/decks";
 import { useI18n } from "@/lib/i18n";
 
@@ -25,41 +24,54 @@ export default function DecksPage() {
     startTransition(() => router.push(`/play/${deck.id}`));
   }
 
+  const cardCount = decks.reduce((sum, d) => sum + d.cards.en.length, 0);
+
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:px-8 sm:py-16">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"
-      >
-        <ArrowLeft className="size-4" />
-        {t("back")}
-      </Link>
+    <>
+      <SiteHeader mobileAction="close" />
+      <main className="mx-auto w-full max-w-[1440px] flex-1 px-6 pb-12 lg:px-[73px]">
+        <div className="lg:px-8">
+          <header className="pt-9 lg:pt-16">
+            <p className="text-[10px] leading-[15px] font-bold tracking-[1.2px] text-ink lg:text-xs lg:leading-[18px]">
+              <span className="lg:hidden">{t("decksEyebrowMobile")}</span>
+              <span className="hidden lg:inline">{t("decksEyebrowDesktop")}</span>
+            </p>
+            <h1 className="mt-5 font-display text-[43px] leading-[51px] font-semibold text-ink lg:mt-6 lg:text-[72px] lg:leading-[89px]">
+              {t("decksTitle")}
+            </h1>
+            <p className="mt-5 max-w-[970px] text-base leading-[25px] text-muted lg:text-[19px] lg:leading-[30px]">
+              <span className="lg:hidden">{t("decksSubtitleMobile")}</span>
+              <span className="hidden lg:inline">{t("decksSubtitleDesktop")}</span>
+            </p>
+          </header>
 
-      <header className="mt-8 mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl">{t("decksTitle")}</h1>
-        <p className="mt-3 max-w-md text-muted">{t("decksSubtitle")}</p>
-      </header>
+          <div className="mt-8 hidden items-center justify-between text-xs font-bold tracking-[1.2px] lg:mt-24 lg:flex">
+            <span className="text-ink">{t("exploreDecks")}</span>
+            <span className="text-muted">{t("decksCount", { decks: decks.length, cards: cardCount })}</span>
+          </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {decks.map((deck, i) => (
-          <DeckTile key={deck.id} deck={deck} index={i} onOpen={open} />
-        ))}
-      </div>
+          <div className="mt-8 grid grid-cols-1 gap-[19px] md:grid-cols-3 md:gap-7 lg:mt-6">
+            {decks.map((deck, i) => (
+              <DeckTile key={deck.id} deck={deck} index={i} onOpen={open} />
+            ))}
+          </div>
+        </div>
 
-      <AnimatePresence>
-        {pending && opening && (
-          <motion.div
-            key="loader"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 flex flex-col bg-app"
-          >
-            <DeckLoader deck={opening} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </main>
+        <AnimatePresence>
+          {pending && opening && (
+            <motion.div
+              key="loader"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 flex flex-col bg-app"
+            >
+              <DeckLoader deck={opening} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+    </>
   );
 }

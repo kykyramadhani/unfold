@@ -6,20 +6,17 @@ export const decks = [
   {
     id: "light-and-fun",
     level: 1,
-    title: { en: "Light & Fun", id: "Ringan & Seru" },
+    title: { en: "Break the ice", id: "Cairkan suasana" },
+    tagline: { en: "Easy beginnings", id: "Awal yang mudah" },
     description: {
-      en: "Easy openers for new faces. No feelings were harmed.",
-      id: "Pembuka obrolan buat kenalan baru. Tanpa drama.",
+      en: "For lighthearted laughs, first meetings, and moments that need a spark.",
+      id: "Untuk tawa ringan, perkenalan pertama, dan momen yang butuh percikan.",
     },
     theme: {
-      surface: "bg-[#FFC93C]",
-      stackFront: "bg-[#F0B62B]",
-      stackBack: "bg-[#D89E18]",
-      onSurface: "text-neutral-900",
-      onSurfaceMuted: "text-neutral-900/65",
-      tape: "bg-[#F2724B]",
-      character: "squiggle",
-      characterColors: { body: "#3EC9B6", shade: "#2AA898", ink: "#0E3B35" },
+      surface: "bg-[#f6e6b8]",
+      rule: "#d2be89",
+      symbol: "✺",
+      circle: "/figma/circle-1.svg",
     },
     cards: {
       en: [
@@ -141,20 +138,17 @@ export const decks = [
   {
     id: "us-two",
     level: 2,
-    title: { en: "Us, Two", id: "Kita Berdua" },
+    title: { en: "A little deeper", id: "Sedikit lebih dalam" },
+    tagline: { en: "Get curious", id: "Mulai penasaran" },
     description: {
-      en: "For the person across the table you already know.",
-      id: "Untuk orang di seberang meja yang sudah kamu kenal.",
+      en: "For stories you haven't told and things you've always wanted to ask.",
+      id: "Untuk cerita yang belum kamu ceritakan dan hal yang selalu ingin kamu tanyakan.",
     },
     theme: {
-      surface: "bg-[#FF6B81]",
-      stackFront: "bg-[#F0596F]",
-      stackBack: "bg-[#D8455C]",
-      onSurface: "text-white",
-      onSurfaceMuted: "text-white/80",
-      tape: "bg-[#E24B62]",
-      character: "burst",
-      characterColors: { body: "#FFCE4F", shade: "#F0B227", ink: "#3B2A08" },
+      surface: "bg-[#d6c9fb]",
+      rule: "#b3a4e4",
+      symbol: "✦",
+      circle: "/figma/circle-2.svg",
     },
     cards: {
       en: [
@@ -276,20 +270,17 @@ export const decks = [
   {
     id: "deep-dive",
     level: 3,
-    title: { en: "Deep Dive", id: "Menyelam Dalam" },
+    title: { en: "Heart to heart", id: "Dari hati ke hati" },
+    tagline: { en: "Get closer", id: "Lebih dekat" },
     description: {
-      en: "Slow questions. Bring someone you actually like.",
-      id: "Pertanyaan yang pelan. Bawa orang yang benar-benar kamu suka.",
+      en: "For the people who feel like home — and the feelings worth sharing.",
+      id: "Untuk orang yang terasa seperti rumah — dan perasaan yang layak dibagi.",
     },
     theme: {
-      surface: "bg-[#6C5CE7]",
-      stackFront: "bg-[#5B4CD6]",
-      stackBack: "bg-[#4A3BC4]",
-      onSurface: "text-white",
-      onSurfaceMuted: "text-white/75",
-      tape: "bg-[#4A3BC4]",
-      character: "hug",
-      characterColors: { body: "#FF8B6B", shade: "#EE6E4C", ink: "#3D170C" },
+      surface: "bg-[#d7e7d9]",
+      rule: "#aac4ae",
+      symbol: "♡",
+      circle: "/figma/circle-3.svg",
     },
     cards: {
       en: [
