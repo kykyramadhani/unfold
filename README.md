@@ -3,19 +3,32 @@
 A card game for deep talks and ice breakers. Pick a deck, tap a card to reveal
 the question, swipe it away to draw the next one.
 
-Built with Next.js (App Router), Tailwind CSS v4, and Framer Motion. All data is
-hardcoded for now.
+Built with Next.js 16 (App Router), React 19, Tailwind CSS v4, Framer Motion and
+Lucide icons. All data is hardcoded for now.
 
 ## Features
 
-- Three decks at different depths: Light & Fun, Us Two, Deep Dive
+- Three decks at different depths: Break the ice, A little deeper, Heart to heart
 - Each round deals 10 random questions out of a pool of 50 per deck
 - 3D card flip and a swipe that reacts to both distance and speed
-- Dark and light mode that follows the OS and can be overridden
+- Warm paper look from the Figma designs, with Fraunces and DM Sans fonts
+- Layouts made for both desktop and mobile
 - English and Indonesian, including every question, switchable mid round
 - Gesture hints that stop showing once you have swiped a few times
 
+## Tech stack
+
+| | |
+|---|---|
+| Framework | Next.js 16 (App Router), React 19 |
+| Styling | Tailwind CSS v4 |
+| Animation | Framer Motion |
+| Icons | lucide-react |
+| Tests | Playwright scripts (Node) |
+
 ## Getting started
+
+Requires Node.js 20 or newer.
 
 ```bash
 npm install
@@ -31,31 +44,32 @@ demand. Run `npm run build && npm start` to see real speed.
 
 ```
 app/
-  layout.js             providers, fonts, the theme script, settings bar
+  layout.js             fonts, metadata, the language provider
   template.js           fade between routes
   page.js               splash screen with the fanned deck hero
   decks/page.js         deck picker, owns the loading overlay
   play/[deckId]/page.js gameplay: deals a hand and tracks progress
-  globals.css           color tokens for light and dark mode
+  globals.css           color tokens (warm paper palette) and fonts
   icon.png              favicon, plus favicon.ico and apple-icon.png
 
 components/
   SwipeableCard.js      flip and swipe gestures only
   CardFaces.js          the cover side and the question side
-  CardCharacters.js     the flat vector characters
-  DeckTile.js           one deck on the picker, drawn as a stack
-  DeckLoader.js         bouncing character shown while a deck opens
+  HeroCards.js          the fanned stack of cards on the home page
+  SiteHeader.js         logo, nav links and the EN / ID switch
+  DeckTile.js           one deck on the picker
+  DeckLoader.js         bouncing deck symbol shown while a deck opens
   GestureHint.js        the "tap to reveal" / "swipe" line
   EndScreen.js          end of round
   ui/Button.js          the one pill button used everywhere
 
 lib/
   i18n.js               language state, UI strings, the t() and tr() helpers
-  theme.js              dark/light state and the no flash script
   hand.js               dealing a random hand
   hints.js              tracking whether the player still needs hints
 
 data/decks.js           all deck content
+public/figma/           SVG ornaments, circles and avatars exported from Figma
 ```
 
 ## How a few things work
@@ -76,19 +90,18 @@ pool, and the active language is applied on top. That way switching between EN
 and ID mid round translates the cards you already have instead of dealing a new
 set.
 
-**Theme is set before the first paint.** `lib/theme.js` exports a small script
-that layout.js inlines into `<head>`. It reads the saved choice, falls back to
-the OS setting, and adds the `dark` class before React runs, so the page never
-flashes the wrong mode.
+**Language is read after mount.** The server always renders English, then
+`LocaleProvider` picks up the saved choice from `localStorage`. That keeps the
+server and client render identical, so React never warns about hydration.
 
-**Colors are split in two.** App colors (background, text, borders) are CSS
-variables in `globals.css` and flip between modes. Deck colors live in
-`data/decks.js` and stay the same in both, because they are the deck's identity.
+**Colors are split in two.** App colors (paper, ink, text, lines) are Tailwind
+theme tokens in `globals.css`. Deck colors live in `data/decks.js`, because they
+are the deck's identity.
 
 **The loading overlay lives on the deck picker**, not on the play route. The
 router stays on the current page until the next one is ready, so a `loading.js`
 file never gets a chance to render here. `useTransition` tells us the navigation
-is still pending, and the overlay shows that deck's own color and character.
+is still pending, and the overlay shows that deck's own color and symbol.
 
 ## Tests
 
@@ -98,7 +111,6 @@ whichever you need:
 ```bash
 node test-swipe.mjs      # swipe brings in the next card, flip, end, restart
 node test-hand.mjs       # random draw: size, no repeats, language stays put
-node test-settings.mjs   # theme and language switching, saving, no flash
 node test-loader.mjs     # tapping a deck shows its loader right away
 node sens.mjs            # swipe sensitivity: what does and does not dismiss
 node perf.mjs            # frame times during the exit animation
@@ -117,16 +129,13 @@ Add an entry to `data/decks.js`:
   id: "your-deck",              // used in the URL
   level: 4,
   title: { en: "...", id: "..." },
+  tagline: { en: "...", id: "..." },
   description: { en: "...", id: "..." },
   theme: {
-    surface: "bg-[#RRGGBB]",    // card and tile color
-    stackFront: "bg-[#...]",    // the two cards peeking out under the tile
-    stackBack: "bg-[#...]",
-    onSurface: "text-white",    // text color that reads on `surface`
-    onSurfaceMuted: "text-white/75",
-    tape: "bg-[#...]",          // the tape label on the question side
-    character: "hug",           // blob | hug | squiggle | burst
-    characterColors: { body: "#...", shade: "#...", ink: "#..." },
+    surface: "bg-[#RRGGBB]",    // card, tile and loader color
+    rule: "#RRGGBB",            // the divider lines on the question side
+    symbol: "✺",                // shown on the cover, tile badge and loader
+    circle: "/figma/circle-1.svg", // the round badge behind the symbol
   },
   cards: { en: [...], id: [...] },
 }
@@ -136,9 +145,15 @@ Both language arrays have to be the same length and in the same order, since the
 shuffle works on positions. A deck can hold any number of questions; only
 `CARDS_PER_ROUND` from `lib/hand.js` are dealt per round.
 
-## Adding a character
+## Scripts
 
-Characters live in `components/CardCharacters.js` on a 200x200 canvas. Each one
-takes `body`, `shade` and `ink` colors so the same shape can be reused by
-different decks. Add it to the `CHARACTERS` map at the bottom of the file, then
-reference the key from a deck's `theme.character`.
+| Command | What it does |
+|---|---|
+| `npm run dev` | dev server on port 3000 |
+| `npm run build` | production build |
+| `npm start` | serve the production build |
+| `npm run lint` | ESLint |
+
+## Author
+
+Rizky Insania Ramadhani ([@kykyramadhani](https://github.com/kykyramadhani))
